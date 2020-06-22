@@ -305,7 +305,7 @@ server <- function(input, output, session) {
     year1 <- as.integer(format(input$map_year[1], "%Y"))
     year2 <- as.integer(format(input$map_year[2], "%Y"))
     
-    # pass user inputs to query function
+    # pass user inputs to query function - defined at top of file
     dtout <- get_query_data(db_path, year1, year2, input$map_species)
     
     dtout
@@ -339,7 +339,7 @@ server <- function(input, output, session) {
     year1 <- as.integer(format(input$year[1], "%Y"))
     year2 <- as.integer(format(input$year[2], "%Y"))
     
-    # pass user inputs to query function
+    # pass user inputs to query function - defined at the top of this file
     dtout <- get_query_data(db_path, year1, year2, input$species)
     
     dtout
