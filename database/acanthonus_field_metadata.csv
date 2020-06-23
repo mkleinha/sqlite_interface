@@ -1,0 +1,74 @@
+table,field,type,unit,description
+Collections,COLLECT_ID,integer,,unique key for collection records - connection to Subcollections table
+Collections,SITE_ID,integer,,key connecting collections to Sites table
+Collections,SOURCE_ID,string,,key connecting collections to Permissions table
+Collections,Date,Date,,"calculated field composed by concatenating Year, Month, Day fields"
+Collections,Year,integer,,4 digit year
+Collections,Month,integer,,2 digit month
+Collections,Day,integer,,2 digit day
+Collections,Collectors,string,,list of names of people who contributed to capture and identification of organisms for collection record
+Collections,Method,string,,method of capture of organisms for collection
+Collections,Start_Time,integer,,4 digit start time of collection effort in the form MMSS
+Collections,End_Time,integer,,4 digit end time of collection effort in the form MMSS
+Collections,Field_Numbers,string,,field numbers of people who contributed to field collection - from museum or DNR
+Collections,Og_Lat,double,,original lattitude provided with collection record from source dataset
+Collections,Og_Lon,double,,original longitude provided with collection record from source dataset
+Collections,Og_Site,string,,original site name from source dataset
+Collections,Site_Snap_Distance,double,meters,distance between site specified by source dataset and master site connected to SITE_ID
+Collections,Locality,string,,description of location of field collection site (currently unpopulated)
+Collections,Weather,string,,description of weather at time and site of collection
+Collections,Reliability_Notes,string,,information specifically related to the reliability of the source collection record
+Collections,Collection_Notes,string,,general information deemed important to include but not appropriate for inclusion in a separate field
+Collections,Target_Taxon,string,,type/s of organism the original collection effort sought to capture
+Collections,Fish,binary,,"1 if target taxa included fish, 0 otherwise"
+Collections,Invertebrate,binary,,"1 if target taxa included Invertebrates (mussels, snails, crayfish, insects), 0 otherwise"
+Collections,Plant,binary,,"1 if target taxa included plants, 0 otherwise"
+Collections,Reptile,binary,,"1 if target taxa included reptiles, 0 otherwise"
+Collections,Amphibian,binary,,"1 if target taxa included amphibians, 0 otherwise"
+Sites,SITE_ID,integer,,unique key for site records - connection to collections table
+Sites,Lat,double,,lattitude in decimal degrees
+Sites,Lon,double,,longitude in decimal degrees
+Sites,HUC12,integer,,12 digit hydrologic unit code
+Sites,HUC10,integer,,10 digit hydrologic unit code
+Sites,HUC8,integer,,8 digit hydrologic unit code
+Sites,State,string,,
+Sites,County,string,,
+Sites,Locality,string,,description of location of site
+Sites,Waterbody,string,,
+Sites,Stream_Order,integer,,
+Sites,Basin,string,,
+Sites,Easting,integer,,
+Sites,Northing,integer,,
+Sites,UTM_Zone,integer,,
+Sites,Lat_Degrees,integer,,Degrees portion of latitude
+Sites,Lat_Minutes,integer,,Minutes portion of latitude
+Sites,Lat_Seconds,double,,Seconds and decimal seconds portion of latitude
+Sites,Lon_Degrees,integer,,Degrees portion of longitude
+Sites,Lon_Minutes,integer,,Minutes portion of longitude
+Sites,Lon_Seconds,double,,Seconds and decimal seconds portion of longitude
+Sites,Site_Notes,string,,general information deemed important to include but not appropriate for inclusion in a separate field
+Sites,AlbersX,double,,
+Sites,AlbersY,double,,
+Subcollections,COLLECT_ID,integer,,key connection subcollection to Collections table
+Subcollections,Count,integer,,number of individuals caught of the species in the Scientific_Name field at this collection
+Subcollections,Native,string,,"""Native"" if organism is native at location of collection, ""Introduced"" if not"
+Subcollections,Subcollection_Notes,string,,general information deemed important to include but not appropriate for inclusion in a separate field
+Subcollections,Scientific_Name,string,,"link to Species table - genus, species, and subspecies of one taxon of organism caught for the collection"
+Subcollections,Life_Stage,string,,"descriptor of life stage of organism - may take the value ""YOY"", ""ammocoete"", ""juvenile"", or ""adult"""
+Permissions,SOURCE_ID,string,,unique key for source records - links to Collections table - of the form (compressed source description)(integer) - e.g. GMNH1234
+Permissions,License,string,,license for the data included in the collection record
+Permissions,Holder,string,,name of the person who holds the license described in the License field
+Permissions,Data_Source,string,,more detailed information about the source of the data included in a collection record
+Species,Scientific_Name,string,,"unique key composed of Genus, Species, and Subspecies for a given organism - connection to Subcollections table"
+Species,Common_Name,string,,"bream, minners"
+Species,Kingdom,string,,
+Species,Phylum,string,,
+Species,Class,string,,
+Species,Order,string,,
+Species,Family,string,,
+Species,Genus,string,,
+Species,Species,string,,
+Species,Subspecies,string,,
+Species,Marine,string,,yes or no - does the organism described by the record like saltwater?
+Species,Species_Notes,string,,general information deemed important to include but not appropriate for inclusion in a separate field
+Species,Group,string,,"general type of the organism described by the record corresponding to the Target taxon columns in the Collections table (Fish, Amphibian, Plant, Reptile, Invertebrate)"
