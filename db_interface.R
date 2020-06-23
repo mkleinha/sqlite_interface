@@ -291,7 +291,6 @@ server <- function(input, output, session) {
                               popup = popups,
                               radius = 2
       )
-      
     }
     
     # show map
