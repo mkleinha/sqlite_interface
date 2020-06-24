@@ -6,7 +6,7 @@
 options(stringsAsFactors = FALSE)
 
 # read in packages
-library(shiny)
+library(shiny) 
 library(shinyjs)
 library(RSQLite)
 library(DBI)
