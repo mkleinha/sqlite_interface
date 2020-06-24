@@ -37,6 +37,7 @@ min_dissolved<-0
 max_totals<-40
 min_totals<-0
 
+
 # lists for input options
 substrates<-c("not determined", "bedrock", "boulder", "cobble", "gravel", "sand", "silt", "mud", "concrete", "wood", "leaves")
 labs<-c("CAIS-UGA", "Analytical Chemistry Lab, Ecology, UGA", "Dalton Utilities","Laboratory for Environmental Analysis, Hassan Lab, UGA", "NA", "Other" )
@@ -50,6 +51,7 @@ buffer_conditions<-c("cleared", "fringe", "canopy")
 #' update_hab
 #'
 #' @param Date character string date in the form yyyy-mm-dd
+#' @param Sample_Time character string time in the form hh:mm 24:00
 #' @param Og_Site integer site number
 #' @param Observers character string listing collectors of the data
 #' @param Temperature_c numeric temperature in degrees celcius
@@ -86,14 +88,14 @@ buffer_conditions<-c("cleared", "fringe", "canopy")
 #'
 #' @examples
 #' 
-update_hab <- function(Date, Og_Site, Observers, Temperature_c, pH, Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
+update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, pH, Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
                        Dissolved_Ammonium_mgl,Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgL, Calcium_mgL, Magnesium_mgl, Sodium_mgl, Analytical_lab, 
                        Instream_Location,Collection_Type, Channel_Width_m,Flow_Type, Substrate, Stage_Condition, Water_Odor,
                        Water_Color, Weather_Conditions, RiverRight_Buffer, RiverLeft_Buffer, Water_Quality_Notes, USGS_Gage_cfs,USGS_Gage_ID,db_path){
   
   # replace one single quote in location descripton with two for SQL query formatting reasons
   #location <- gsub("'", "''", location)
-  date <- gsub(" *UTC$", "", date) # remove time from date
+  date <- gsub(" *UTC$", "", Date) # remove time from date
   
   # empty string to which error messages will be pasted
   msg <- ""
@@ -193,10 +195,10 @@ update_hab <- function(Date, Og_Site, Observers, Temperature_c, pH, Dissolved_Ox
   if(nchar(msg) == 0){
     
     # set up SQL insert query structure specifying fields and values (see usage examples of sqlInterpolate function)
-    sql <- "INSERT INTO habitat (Date, Og_Site, Observers, Temperature_c, ph, Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
+    sql <- "INSERT INTO habitat (Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
                        Dissolved_Ammonium_mgl,Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgL, Calcium_mgL, Magnesium_mgl, Sodium_mgl, Analytical_lab, 
                        Instream_Location,Collection_Type, Channel_Width_m,Flow_Type, Substrate, Stage_Condition, Water_Odor,
-                       Water_Color, Weather_Conditions, RiverRight_Buffer, RiverLeft_Buffer, Water_Quality_Notes, USGS_Gage_cfs,USGS_Gage_ID) VALUES (?Date, ?Og_Site, ?Observers, ?Temperature_c, ?ph, ?Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
+                       Water_Color, Weather_Conditions, RiverRight_Buffer, RiverLeft_Buffer, Water_Quality_Notes, USGS_Gage_cfs,USGS_Gage_ID) VALUES (?Date,?Sample_Time ?Og_Site, ?Observers, ?Temperature_c, ?ph, ?Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
                        ?Dissolved_Ammonium_mgl,?Dissolved_Phosphorus_mgl, ?Total_Nitrogen_mgl, ?Total_Phosphorus_mgL, ?Calcium_mgL, ?Magnesium_mgl, ?Sodium_mgl, ?Analytical_lab, 
                        ?Instream_Location,?Collection_Type, ?Channel_Width_m,?Flow_Type, ?Substrate, ?Stage_Condition, ?Water_Odor,
                        ?Water_Color, ?Weather_Conditions, ?RiverRight_Buffer, ?RiverLeft_Buffer, ?Water_Quality_Notes, ?USGS_Gage_cfs,?USGS_Gage_ID);"
@@ -206,7 +208,8 @@ update_hab <- function(Date, Og_Site, Observers, Temperature_c, pH, Dissolved_Ox
     
     # construct query using sqlInterpolate to prevent SQL injection attacks
     query <- sqlInterpolate(con, sql, 
-                            Date = Date, 
+                            Date = Date,
+                            Sample_Time=Sample_Time,
                             Og_Site = Og_Site,
                             Observers = Observers,
                             Temperature_c = Temperature_c, 
@@ -300,6 +303,15 @@ ui <- fluidPage(
                                   min = first_date
                                 )
                          ),
+                         column(2,
+                                textInput(
+                                  inputId = "Sample_Time",
+                                  label = "Sample Time",
+                                  value = "",
+                                  # entry window takes up the entire width of its container / the browser window 
+                                  # to allow for long lists of data collectors to be visible
+                                )
+                         ),
                          column(1,
                                 numericInput(inputId = "Og_Site",
                                              label = "Site#",
@@ -368,7 +380,8 @@ ui <- fluidPage(
                                              value = NULL, 
                                              min = min_spc, 
                                              max = max_spc,
-                                             step = .01)
+                                             step = .01, 
+                                             width="4cm")
                          ),
                          column(2,
                                 htmlOutput("turb_div"),
@@ -770,7 +783,8 @@ server <- function(input, output, session) {
     }else{
       
       # attempt to add a record composed of the entered values and retrieve any error messages
-      result <- update_hab(input$Date, 
+      result <- update_hab(input$Date,
+                           input$Sample_Time,
                            input$Og_Site,
                            input$Observers, 
                            input$Temperature_c, 
@@ -830,6 +844,7 @@ server <- function(input, output, session) {
   # combine all inputs to monitor for changes
   check_all_inputs <- reactive({
     list(input$Date, 
+         input$Sample_Time,
          input$Og_Site,
          input$Observers, 
          input$Temperature_c, 
