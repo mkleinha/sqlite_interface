@@ -45,7 +45,7 @@ collect_types<-c("wading", "bucket")
 instream_locations<-c("left bank", "right bank", "thalweg", "open channel", "bridge")
 flow_types<-c("riffle", "run", "pool", "backwater")
 flow_conditions<-c("not determined", "stable-low", "stable-high", "stable-normal", "rising", "falling", "peak")
-weather_conditons<-c("heavy rain", "hot", "cold", "sunny", "cloudy", "partly cloudy", "light rain", "snow")
+weather_conditions<-c("heavy rain", "hot", "cold", "sunny", "cloudy", "partly cloudy", "light rain", "snow")
 buffer_conditions<-c("cleared", "fringe", "canopy")
 #usgs_gages<c()
 #' update_hab
@@ -301,7 +301,7 @@ ui <- fluidPage(
                                   min = first_date
                                 )
                          ),
-                         column(4,
+                         column(1,
                                 numericInput(inputId = "Og_Site",
                                              label = "Site#",
                                              value = NULL,
@@ -325,8 +325,9 @@ ui <- fluidPage(
                        fluidRow(
                          column(2,
                                 htmlOutput("water_quality")
+                         )
                          ),
-                         
+                       fluidRow(
                          # the 'min' and 'max' arguments to the input functions 
                          # specified here are only enforced by the function 
                          # if the user sets the value using the up and down arrows, 
@@ -343,7 +344,7 @@ ui <- fluidPage(
                                              max = max_temp,
                                              step = .01)
                          ),
-                         column(2,
+                         column(1,
                                 htmlOutput("ph_div"),
                                 numericInput(inputId = "ph", 
                                              label = "", 
@@ -361,7 +362,7 @@ ui <- fluidPage(
                                              max = max_do,
                                              step = .01)
                          ),
-                         column(2,
+                         column(4,
                                 htmlOutput("spc_div"),
                                 numericInput(inputId = "Specific_Conductivity_uscm", 
                                              label = "", 
@@ -380,10 +381,10 @@ ui <- fluidPage(
                                              step = .01)
                          )
                        ),
-                       hr(),
-                       # second row, water quality
+                      
+                       # third row, water quality
                        fluidRow(
-                         column(2,
+                         column(1,
                                 selectInput(inputId = "Analytical_Lab", 
                                             label = "Analytical Lab", 
                                             # added empty string to options for streams in order to prevent errors 
@@ -437,8 +438,6 @@ ui <- fluidPage(
                                              step = .01)
                          )
                        ),
-                         
-                        hr(), 
                        fluidRow(
                          column(2,
                                 htmlOutput("calc_div"),
@@ -522,7 +521,7 @@ ui <- fluidPage(
                                    value = "",
                                    # entry window takes up the entire width of its container / the browser window 
                                    # to allow for long lists of data collectors to be visible
-                                   width = "10%" 
+                                   width = "50%" 
                                  )
                           ),
                           column(4,
@@ -532,47 +531,48 @@ ui <- fluidPage(
                                    value = "",
                                    # entry window takes up the entire width of its container / the browser window 
                                    # to allow for long lists of data collectors to be visible
-                                   width = "10%" 
+                                   width = "100%" 
                                  )
                           )
                           ),
                           hr(),
                           fluidRow(
-                            column(2, selectInput(inputId = "Weather_Conditions", 
+                            column(3, selectInput(inputId = "Weather_Conditions", 
                                                   label = "Weather", 
                                                   # added empty string to options for streams in order to prevent errors 
                                                   # that could occur if users submit data without changing the stream name from the default stream,
                                                   # leading to data misattributed to the default stream
-                                                  choices = c("", weather_conditons), 
+                                                  choices = c("", weather_conditions), 
                                                   multiple = TRUE)
-                            )
                             ),
-                            fluidRow(
-                              column(2, selectInput(inputId = "RiverRight_Buffer", 
+                          
+                              column(4, selectInput(inputId = "RiverRight_Buffer", 
                                                     label = "River Right Riparian Buffer Conition", 
                                                     # added empty string to options for streams in order to prevent errors 
                                                     # that could occur if users submit data without changing the stream name from the default stream,
                                                     # leading to data misattributed to the default stream
-                                                    choices = c("",buffer_conditons), 
+                                                    choices = c("",buffer_conditions), 
                                                     multiple = TRUE) 
-                              )
                               ),
-                              fluidRow(
-                                column(2, selectInput(inputId = "RiverLeft_Buffer", 
+  
+                                column(4, selectInput(inputId = "RiverLeft_Buffer", 
                                                       label = "River Left Riparian Buffer Conition", 
                                                       # added empty string to options for streams in order to prevent errors 
                                                       # that could occur if users submit data without changing the stream name from the default stream,
                                                       # leading to data misattributed to the default stream
-                                                      choices = c("",buffer_conditons), 
+                                                      choices = c("",buffer_conditions), 
                                                       multiple = TRUE) 
-                                ),
-                                column(2,
+                                )
+                            ),
+                       hr(),
+                       fluidRow(
+                                column(3,
                                        numericInput(inputId = "USGS_Gage_cfs",
                                                     label = "USGS Gage Discharge (cfs)",
                                                     value = NULL)
                                 
                               ),
-                              column(2,
+                              column(3,
                                      numericInput(inputId = "USGS_Gage_ID",
                                                   label = "USGS Gage ID",
                                                   value = NULL)
@@ -581,7 +581,7 @@ ui <- fluidPage(
                               
                               hr(),
                               fluidRow(
-                                column(6,
+                                column(8,
                                        textInput(
                                          inputId = "Water_Quality_Notes",
                                          label = "Water Quality Notes",
