@@ -37,8 +37,7 @@ min_dissolved<-0
 max_totals<-40
 min_totals<-0
 
-# list of streams for input options
-
+# lists for input options
 substrates<-c("not determined", "bedrock", "boulder", "cobble", "gravel", "sand", "silt", "mud", "concrete", "wood", "leaves")
 labs<-c("CAIS-UGA", "Analytical Chemistry Lab, Ecology, UGA", "Dalton Utilities","Laboratory for Environmental Analysis, Hassan Lab, UGA", "NA", "Other" )
 collect_types<-c("wading", "bucket")
