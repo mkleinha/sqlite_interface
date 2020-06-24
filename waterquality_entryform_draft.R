@@ -114,7 +114,7 @@ update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, pH, 
   }
   #need to select location of sample in channel
   if(is.na(Instream_Location)){
-    msg <- paste0(msg, "No insream location selected.<br/>")
+    msg <- paste0(msg, "No instream location selected.<br/>")
   }
   #need to select flow type
   if(is.na(Flow_Type)){
@@ -705,7 +705,7 @@ server <- function(input, output, session) {
   })
   
   output$nitrate_div <- renderUI({
-    HTML(paste0("<div style='font-weight:bolder;",turb_style(), "'>Dissolved NO3 (mg/L)</div>"))
+    HTML(paste0("<div style='font-weight:bolder;",nitrate_style(), "'>Dissolved NO3 (mg/L)</div>"))
   })
   
   turb_style <- eventReactive(input$Turbidity_ntu, {
@@ -721,7 +721,7 @@ server <- function(input, output, session) {
   })
   
   output$ammonium_div <- renderUI({
-    HTML(paste0("<div style='font-weight:bolder;",turb_style(), "'>Dissolved NH4 (mg/L)</div>"))
+    HTML(paste0("<div style='font-weight:bolder;",ammonium_style(), "'>Dissolved NH4 (mg/L)</div>"))
   })
   
   srp_style <- eventReactive(input$Dissolved_Phosphorus_mgl, {
@@ -729,7 +729,7 @@ server <- function(input, output, session) {
   })
   
   output$srp_div <- renderUI({
-    HTML(paste0("<div style='font-weight:bolder;",turb_style(), "'>Dissolved PO4 (mg/L)</div>"))
+    HTML(paste0("<div style='font-weight:bolder;",srp_style(), "'>Dissolved PO4 (mg/L)</div>"))
   })
   
   totn_style <- eventReactive(input$Total_Nitrogen_mgl, {
@@ -737,7 +737,7 @@ server <- function(input, output, session) {
   })
   
   output$totn_div <- renderUI({
-    HTML(paste0("<div style='font-weight:bolder;",turb_style(), "'>Total N (mg/L)</div>"))
+    HTML(paste0("<div style='font-weight:bolder;",totn_style(), "'>Total N (mg/L)</div>"))
   })
   
   totp_style <- eventReactive(input$Total_Phosphorus_mgl, {
@@ -745,31 +745,31 @@ server <- function(input, output, session) {
   })
   
   output$totp_div <- renderUI({
-    HTML(paste0("<div style='font-weight:bolder;",turb_style(), "'>Total P (mg/L)</div>"))
+    HTML(paste0("<div style='font-weight:bolder;",totp_style(), "'>Total P (mg/L)</div>"))
   })
   
   calc_style <- eventReactive(input$Calcium_mgl, {
-    style_switch(input$Calcium_mgl, default_style, error_style)
+    style_switch(input$Calcium_mgl,min_totals, max_totals,  default_style, error_style)
   })
   
   output$calc_div <- renderUI({
-    HTML(paste0("<div style='font-weight:bolder;",turb_style(), "'>Calcium (mg/L)</div>"))
+    HTML(paste0("<div style='font-weight:bolder;",calc_style(), "'>Calcium (mg/L)</div>"))
   })
   
   sod_style <- eventReactive(input$Sodium_mgl, {
-    style_switch(input$Sodium_mgl, default_style, error_style)
+    style_switch(input$Sodium_mgl,min_totals, max_totals, default_style, error_style)
   })
   
   output$sod_div <- renderUI({
-    HTML(paste0("<div style='font-weight:bolder;",turb_style(), "'>Sodium (mg/L)</div>"))
+    HTML(paste0("<div style='font-weight:bolder;",sod_style(), "'>Sodium (mg/L)</div>"))
   })
   
   mag_style <- eventReactive(input$Magnesium_mgl, {
-    style_switch(input$Magnesium_mgl, default_style, error_style)
+    style_switch(input$Magnesium_mgl,min_totals, max_totals, default_style, error_style)
   })
   
   output$mag_div <- renderUI({
-    HTML(paste0("<div style='font-weight:bolder;",turb_style(), "'>Magnesium (mg/L)</div>"))
+    HTML(paste0("<div style='font-weight:bolder;",mag_style(), "'>Magnesium (mg/L)</div>"))
   })
   
   # store errors for printing to display
