@@ -36,7 +36,7 @@ con <- dbConnect(RSQLite::SQLite(), db_path)
 ymd <- dbGetQuery(con, "SELECT DISTINCT year, month, day FROM collections;")
 
 # get all unique species names from species table
-spp <- dbGetQuery(con, "SELECT Scientific_Name FROM species;")[[1]]
+spp <- dbGetQuery(con, "SELECT Scientific_Name FROM taxonomy_lookup;")[[1]]
 
 dbDisconnect(con) # disconnect from database
 
