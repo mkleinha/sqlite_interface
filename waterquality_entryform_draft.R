@@ -32,7 +32,7 @@ max_spc <- 10000
 min_spc <- 0
 max_turb <- 10000
 min_turb <- 0
-max_dissovled<-40
+max_dissolved<-40
 min_dissolved<-0
 max_totals<-40
 min_totals<-0
@@ -43,9 +43,9 @@ substrates<-c("not determined", "bedrock", "boulder", "cobble", "gravel", "sand"
 labs<-c("CAIS-UGA", "Analytical Chemistry Lab, Ecology, UGA", "Dalton Utilities","Laboratory for Environmental Analysis, Hassan Lab, UGA", "NA", "Other" )
 collect_types<-c("wading", "bucket")
 instream_locations<-c("left bank", "right bank", "thalweg", "open channel", "bridge")
-flow_types<-c("riffle", "run", "pool", "backwater")
+flow_types<-c("riffle", "run", "pool", "backwater", "other")
 flow_conditions<-c("not determined", "stable-low", "stable-high", "stable-normal", "rising", "falling", "peak")
-weather_conditions<-c("heavy rain", "hot", "cold", "sunny", "cloudy", "partly cloudy", "light rain", "snow")
+weather_conditions<-c("NA", "heavy rain", "hot", "cold", "sunny", "cloudy", "partly cloudy", "light rain", "snow")
 buffer_conditions<-c("cleared", "fringe", "canopy")
 #usgs_gages<c()
 #' update_hab
@@ -55,13 +55,13 @@ buffer_conditions<-c("cleared", "fringe", "canopy")
 #' @param Og_Site integer site number
 #' @param Observers character string listing collectors of the data
 #' @param Temperature_c numeric temperature in degrees celcius
-#' @param pH integer pH
+#' @param ph integer pH
 #' @param Dissolved_oxygen_mgl numeric dissolved oxygen concentration in mg / L
 #' @param Specific_Conductivity_uscm numeric specific conductivity
 #' @param Turbidity_ntu numeric turbidity in NTU
 #' @param Dissolved_Nitrate_mgl numeric nitrate in mg/L
 #' @param Dissolved_Ammonium_mgl numeric ammonium in mg/L
-#' @param Dissolved_phosphorus_mgl numeric phosphorus in mg/L
+#' @param Dissolved_Phosphorus_mgl numeric phosphorus in mg/L
 #' @param Total_Nitrogen_mgl numeric total nitrogen in mg/L
 #' @param Total_Phosphorus_mgl numeric total phosphours in mg/L
 #' @param Calcium_mgl numeric calcium in mg/L
@@ -88,8 +88,8 @@ buffer_conditions<-c("cleared", "fringe", "canopy")
 #'
 #' @examples
 #' 
-update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, pH, Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
-                       Dissolved_Ammonium_mgl,Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgL, Calcium_mgL, Magnesium_mgl, Sodium_mgl, Analytical_lab, 
+update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
+                       Dissolved_Ammonium_mgl,Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgl, Calcium_mgl, Magnesium_mgl, Sodium_mgl, Analytical_Lab, 
                        Instream_Location,Collection_Type, Channel_Width_m,Flow_Type, Substrate, Stage_Condition, Water_Odor,
                        Water_Color, Weather_Conditions, RiverRight_Buffer, RiverLeft_Buffer, Water_Quality_Notes, USGS_Gage_cfs,USGS_Gage_ID,db_path){
   
@@ -105,9 +105,12 @@ update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, pH, 
     msg <- paste0(msg, "No site ID entered.<br/>")
   }
   #need to select substrate types
-  if(is.na(Substrate)){
-    msg <- paste0(msg, "No substrate selected.<br/>")
-  }
+  #if(length(Substrate)<1){
+   # msg <- paste0(msg, "No substrate selected.<br/>")
+  #}
+  #if(length(Weather_Conditions)<1){
+  #  msg <- paste0(msg, "No weather selected.<br/>")
+  #}
   #need to select collection type
   if(is.na(Collection_Type)){
     msg <- paste0(msg, "No collection type selected.<br/>")
@@ -184,9 +187,9 @@ update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, pH, 
       msg <- paste0(msg, "Entered total nitrogen value outside reasonable range (",min_totals,"-",max_totals,").<br/>")
   }
   
-  if(is.na(Total_Phosphorus_mgL)){
+  if(is.na(Total_Phosphorus_mgl)){
       
-  }else if(Total_Phosphorus_mgL > max_totals | Total_Phosphorus_mgL < min_totals){
+  }else if(Total_Phosphorus_mgl > max_totals | Total_Phosphorus_mgl < min_totals){
       msg <- paste0(msg, "Entered total phosphorus value outside reasonable range (",min_totals,"-",max_totals,").<br/>")
   }
   
@@ -196,10 +199,10 @@ update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, pH, 
     
     # set up SQL insert query structure specifying fields and values (see usage examples of sqlInterpolate function)
     sql <- "INSERT INTO habitat (Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
-                       Dissolved_Ammonium_mgl,Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgL, Calcium_mgL, Magnesium_mgl, Sodium_mgl, Analytical_lab, 
+                       Dissolved_Ammonium_mgl,Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgl, Calcium_mgl, Magnesium_mgl, Sodium_mgl, Analytical_Lab, 
                        Instream_Location,Collection_Type, Channel_Width_m,Flow_Type, Substrate, Stage_Condition, Water_Odor,
                        Water_Color, Weather_Conditions, RiverRight_Buffer, RiverLeft_Buffer, Water_Quality_Notes, USGS_Gage_cfs,USGS_Gage_ID) VALUES (?Date,?Sample_Time ?Og_Site, ?Observers, ?Temperature_c, ?ph, ?Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
-                       ?Dissolved_Ammonium_mgl,?Dissolved_Phosphorus_mgl, ?Total_Nitrogen_mgl, ?Total_Phosphorus_mgL, ?Calcium_mgL, ?Magnesium_mgl, ?Sodium_mgl, ?Analytical_lab, 
+                       ?Dissolved_Ammonium_mgl,?Dissolved_Phosphorus_mgl, ?Total_Nitrogen_mgl, ?Total_Phosphorus_mgl, ?Calcium_mgl, ?Magnesium_mgl, ?Sodium_mgl, ?Analytical_Lab, 
                        ?Instream_Location,?Collection_Type, ?Channel_Width_m,?Flow_Type, ?Substrate, ?Stage_Condition, ?Water_Odor,
                        ?Water_Color, ?Weather_Conditions, ?RiverRight_Buffer, ?RiverLeft_Buffer, ?Water_Quality_Notes, ?USGS_Gage_cfs,?USGS_Gage_ID);"
     
@@ -221,11 +224,11 @@ update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, pH, 
                             Dissolved_Ammonium_mgl=Dissolved_Ammonium_mgl,
                             Dissolved_Phosphorus_mgl=Dissolved_Phosphorus_mgl,
                             Total_Nitrogen_mgl=Total_Nitrogen_mgl,
-                            Total_Phosphorus_mgL=TTotal_Phosphorus_mgL,
-                            Calcium_mgL=Calcium_mgL, 
+                            Total_Phosphorus_mgl=Total_Phosphorus_mgl,
+                            Calcium_mgl=Calcium_mgl, 
                             Sodium_mgl=Sodium_mgl, 
                             Magnesium_mgl=Magnesium_mgl,
-                            Analytical_lab=Analytical_lab,
+                            Analytical_Lab=Analytical_Lab,
                             Instream_Location=Instream_Location, 
                             Collection_Type=Collection_Type, 
                             Channel_Width_m=Channel_Width_m, 
@@ -480,8 +483,8 @@ ui <- fluidPage(
                                              # added empty string to options for streams in order to prevent errors 
                                              # that could occur if users submit data without changing the stream name from the default stream,
                                              # leading to data misattributed to the default stream
-                                             choices = c("", instream_locations), 
-                                             multiple = TRUE) 
+                                             choices = c("", instream_locations)
+                                             ) 
                         ),
                         
                         column(2, selectInput(inputId = "Collection_Type", 
@@ -489,24 +492,24 @@ ui <- fluidPage(
                                               # added empty string to options for streams in order to prevent errors 
                                               # that could occur if users submit data without changing the stream name from the default stream,
                                               # leading to data misattributed to the default stream
-                                              choices = c("", collect_types), 
-                                              multiple = TRUE) 
+                                              choices = c("", collect_types)
+                                              ) 
                         ),
                         column(2, selectInput(inputId = "Flow_Type", 
                                               label = "Flow Type", 
                                               # added empty string to options for streams in order to prevent errors 
                                               # that could occur if users submit data without changing the stream name from the default stream,
                                               # leading to data misattributed to the default stream
-                                              choices = c("", flow_types), 
-                                              multiple = TRUE) 
+                                              choices = c("", flow_types)
+                                              ) 
                         ),
                         column(2, selectInput(inputId = "Flow_Condition", 
                                               label = "Stage Condition", 
                                               # added empty string to options for streams in order to prevent errors 
                                               # that could occur if users submit data without changing the stream name from the default stream,
                                               # leading to data misattributed to the default stream
-                                              choices = c("", flow_conditions), 
-                                              multiple = TRUE) 
+                                              choices = c("", flow_conditions)
+                                              ) 
                         )
                         ),
                         hr(),
@@ -563,8 +566,8 @@ ui <- fluidPage(
                                                     # added empty string to options for streams in order to prevent errors 
                                                     # that could occur if users submit data without changing the stream name from the default stream,
                                                     # leading to data misattributed to the default stream
-                                                    choices = c("",buffer_conditions), 
-                                                    multiple = TRUE) 
+                                                    choices = c("",buffer_conditions)
+                                                    ) 
                               ),
   
                                 column(4, selectInput(inputId = "RiverLeft_Buffer", 
@@ -572,8 +575,8 @@ ui <- fluidPage(
                                                       # added empty string to options for streams in order to prevent errors 
                                                       # that could occur if users submit data without changing the stream name from the default stream,
                                                       # leading to data misattributed to the default stream
-                                                      choices = c("",buffer_conditions), 
-                                                      multiple = TRUE) 
+                                                      choices = c("",buffer_conditions)
+                                                      ) 
                                 )
                             ),
                        hr(),
@@ -796,11 +799,11 @@ server <- function(input, output, session) {
                            input$Dissolved_Ammonium_mgl,
                            input$Dissolved_Phosphorus_mgl,
                            input$Total_Nitrogen_mgl,
-                           input$Total_Phosphorus_mgL,
-                           input$Calcium_mgL, 
+                           input$Total_Phosphorus_mgl,
+                           input$Calcium_mgl, 
                            input$Sodium_mgl, 
                            input$Magnesium_mgl,
-                           input$Analytical_lab,
+                           input$Analytical_Lab,
                            input$Instream_Location, 
                            input$Collection_Type, 
                            input$Channel_Width_m, 
@@ -856,11 +859,11 @@ server <- function(input, output, session) {
          input$Dissolved_Ammonium_mgl,
          input$Dissolved_Phosphorus_mgl,
          input$Total_Nitrogen_mgl,
-         input$Total_Phosphorus_mgL,
-         input$Calcium_mgL, 
+         input$Total_Phosphorus_mgl,
+         input$Calcium_mgl, 
          input$Sodium_mgl, 
          input$Magnesium_mgl,
-         input$Analytical_lab,
+         input$Analytical_Lab,
          input$Instream_Location, 
          input$Collection_Type, 
          input$Channel_Width_m, 
