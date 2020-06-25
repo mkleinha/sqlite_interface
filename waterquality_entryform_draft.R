@@ -91,11 +91,12 @@ buffer_conditions<-c("cleared", "fringe", "canopy")
 #' 
 update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, Dissolved_Oxygen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
                        Dissolved_Ammonium_mgl,Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgl, Calcium_mgl, Magnesium_mgl, Sodium_mgl,Potassium_mgl, Analytical_Lab, 
-                       Instream_Location,Collection_Type, Channel_Width_m,Flow_Type, Substrate, Stage_Condition, Water_Odor,
-                       Water_Color, Weather_Conditions, RiverRight_Buffer, RiverLeft_Buffer, Water_Quality_Notes, USGS_Gage_cfs,USGS_Gage_ID,db_path){
+                       Instream_Location,Collection_Type, Channel_Width_m, Flow_Type, Substrate, Stage_Condition, Water_Odor,
+                       Water_Color, Weather_Conditions, RiverRight_Buffer, RiverLeft_Buffer, Water_Quality_Notes, USGS_Gage_cfs, USGS_Gage_ID, db_path){
   
   # replace one single quote in location descripton with two for SQL query formatting reasons
   #location <- gsub("'", "''", location)
+  Water_Quality_Notes <- gsub("'", "''", Water_Quality_Notes)
   date <- gsub(" *UTC$", "", Date) # remove time from date
   
   # empty string to which error messages will be pasted
@@ -369,7 +370,7 @@ ui <- fluidPage(
                                              max = max_ph,
                                              step = .01)
                          ),
-                         column(2,
+                         column(1,
                                 htmlOutput("do_div"),
                                 numericInput(inputId = "Dissolved_Oxygen_mgl", 
                                              label = "", 
@@ -378,7 +379,7 @@ ui <- fluidPage(
                                              max = max_do,
                                              step = .01)
                          ),
-                         column(4,
+                         column(3,
                                 htmlOutput("spc_div"),
                                 numericInput(inputId = "Specific_Conductivity_uscm", 
                                              label = "", 
@@ -401,7 +402,7 @@ ui <- fluidPage(
                        
                        # third row, water quality
                        fluidRow(
-                         column(1,
+                         column(2,
                                 selectInput(inputId = "Analytical_Lab", 
                                             label = "Analytical Lab", 
                                             # added empty string to options for streams in order to prevent errors 
