@@ -67,6 +67,7 @@ buffer_conditions<-c("cleared", "fringe", "canopy")
 #' @param Calcium_mgl numeric calcium in mg/L
 #' @param Magnesium_mgl numeric magnesium in mg/L
 #' @param Sodium_mgl numeric sodium in mg/L
+#' @param Potassium_mgl numeric potassium in mg/L
 #' @param Analytical_Lab character string stating where chemical analyses were performed
 #' @param Collection_Type character string describing if sample was collected by wading or bucket
 #' @param Instream_Location character string describing location of sample in the channel
@@ -89,7 +90,7 @@ buffer_conditions<-c("cleared", "fringe", "canopy")
 #' @examples
 #' 
 update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
-                       Dissolved_Ammonium_mgl,Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgl, Calcium_mgl, Magnesium_mgl, Sodium_mgl, Analytical_Lab, 
+                       Dissolved_Ammonium_mgl,Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgl, Calcium_mgl, Magnesium_mgl, Sodium_mgl,Potassium_mgl, Analytical_Lab, 
                        Instream_Location,Collection_Type, Channel_Width_m,Flow_Type, Substrate, Stage_Condition, Water_Odor,
                        Water_Color, Weather_Conditions, RiverRight_Buffer, RiverLeft_Buffer, Water_Quality_Notes, USGS_Gage_cfs,USGS_Gage_ID,db_path){
   
@@ -106,7 +107,7 @@ update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, 
   }
   #need to select substrate types
   #if(length(Substrate)<1){
-   # msg <- paste0(msg, "No substrate selected.<br/>")
+  # msg <- paste0(msg, "No substrate selected.<br/>")
   #}
   #if(length(Weather_Conditions)<1){
   #  msg <- paste0(msg, "No weather selected.<br/>")
@@ -164,33 +165,33 @@ update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, 
   }
   
   if(is.na(Dissolved_Nitrate_mgl)){
-      
+    
   }else if(Dissolved_Nitrate_mgl > max_dissolved | Dissolved_Nitrate_mgl < min_dissolved){
-      msg <- paste0(msg, "Entered dissolved nitrate value outside reasonable range (",min_dissolved,"-",max_dissovled,").<br/>")
+    msg <- paste0(msg, "Entered dissolved nitrate value outside reasonable range (",min_dissolved,"-",max_dissolved,").<br/>")
   }
   
   if(is.na(Dissolved_Ammonium_mgl)){
-      
+    
   }else if(Dissolved_Ammonium_mgl > max_dissolved | Dissolved_Ammonium_mgl < min_dissolved){
-      msg <- paste0(msg, "Entered dissolved ammonium value outside reasonable range (",min_dissolved,"-",max_dissovled,").<br/>")
+    msg <- paste0(msg, "Entered dissolved ammonium value outside reasonable range (",min_dissolved,"-",max_dissolved,").<br/>")
   }
   
   if(is.na(Dissolved_Phosphorus_mgl)){
-      
+    
   }else if(Dissolved_Phosphorus_mgl > max_dissolved | Dissolved_Phosphorus_mgl < min_dissolved){
-      msg <- paste0(msg, "Entered dissolved phosphorus value outside reasonable range (",min_dissolved,"-",max_dissovled,").<br/>")
+    msg <- paste0(msg, "Entered dissolved phosphorus value outside reasonable range (",min_dissolved,"-",max_dissolved,").<br/>")
   }
   
   if(is.na(Total_Nitrogen_mgl)){
-      
+    
   }else if(Total_Nitrogen_mgl > max_totals | Total_Nitrogen_mgl < min_totals){
-      msg <- paste0(msg, "Entered total nitrogen value outside reasonable range (",min_totals,"-",max_totals,").<br/>")
+    msg <- paste0(msg, "Entered total nitrogen value outside reasonable range (",min_totals,"-",max_totals,").<br/>")
   }
   
   if(is.na(Total_Phosphorus_mgl)){
-      
+    
   }else if(Total_Phosphorus_mgl > max_totals | Total_Phosphorus_mgl < min_totals){
-      msg <- paste0(msg, "Entered total phosphorus value outside reasonable range (",min_totals,"-",max_totals,").<br/>")
+    msg <- paste0(msg, "Entered total phosphorus value outside reasonable range (",min_totals,"-",max_totals,").<br/>")
   }
   
   # if there are no error messages (the length of the messages string is 0), 
@@ -199,10 +200,10 @@ update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, 
     
     # set up SQL insert query structure specifying fields and values (see usage examples of sqlInterpolate function)
     sql <- "INSERT INTO habitat (Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
-                       Dissolved_Ammonium_mgl,Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgl, Calcium_mgl, Magnesium_mgl, Sodium_mgl, Analytical_Lab, 
+                       Dissolved_Ammonium_mgl,Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgl, Calcium_mgl, Magnesium_mgl, Sodium_mgl,Potassium_mgl, Analytical_Lab, 
                        Instream_Location,Collection_Type, Channel_Width_m,Flow_Type, Substrate, Stage_Condition, Water_Odor,
                        Water_Color, Weather_Conditions, RiverRight_Buffer, RiverLeft_Buffer, Water_Quality_Notes, USGS_Gage_cfs,USGS_Gage_ID) VALUES (?Date,?Sample_Time ?Og_Site, ?Observers, ?Temperature_c, ?ph, ?Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
-                       ?Dissolved_Ammonium_mgl,?Dissolved_Phosphorus_mgl, ?Total_Nitrogen_mgl, ?Total_Phosphorus_mgl, ?Calcium_mgl, ?Magnesium_mgl, ?Sodium_mgl, ?Analytical_Lab, 
+                       ?Dissolved_Ammonium_mgl,?Dissolved_Phosphorus_mgl, ?Total_Nitrogen_mgl, ?Total_Phosphorus_mgl, ?Calcium_mgl, ?Magnesium_mgl, ?Sodium_mgl,?Potassium_mgl, ?Analytical_Lab, 
                        ?Instream_Location,?Collection_Type, ?Channel_Width_m,?Flow_Type, ?Substrate, ?Stage_Condition, ?Water_Odor,
                        ?Water_Color, ?Weather_Conditions, ?RiverRight_Buffer, ?RiverLeft_Buffer, ?Water_Quality_Notes, ?USGS_Gage_cfs,?USGS_Gage_ID);"
     
@@ -228,6 +229,7 @@ update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, 
                             Calcium_mgl=Calcium_mgl, 
                             Sodium_mgl=Sodium_mgl, 
                             Magnesium_mgl=Magnesium_mgl,
+                            Potassium_mgl=Potassium_mgl,
                             Analytical_Lab=Analytical_Lab,
                             Instream_Location=Instream_Location, 
                             Collection_Type=Collection_Type, 
@@ -323,7 +325,7 @@ ui <- fluidPage(
                                              max = 1000000000 # this seems like a lot of sites, but who knows how people number their sites
                                 )
                          ),
-                        column(6,
+                         column(6,
                                 textInput(
                                   inputId = "Observers",
                                   label = "Observer(s)",
@@ -340,7 +342,7 @@ ui <- fluidPage(
                          column(2,
                                 htmlOutput("water_quality")
                          )
-                         ),
+                       ),
                        fluidRow(
                          # the 'min' and 'max' arguments to the input functions 
                          # specified here are only enforced by the function 
@@ -396,7 +398,7 @@ ui <- fluidPage(
                                              step = .01)
                          )
                        ),
-                      
+                       
                        # third row, water quality
                        fluidRow(
                          column(1,
@@ -413,7 +415,7 @@ ui <- fluidPage(
                                              label = "", 
                                              value = NULL, 
                                              min = min_dissolved, 
-                                             max = max_dissovled,
+                                             max = max_dissolved,
                                              step = .01)
                          ),
                          column(2,
@@ -422,7 +424,7 @@ ui <- fluidPage(
                                              label = "", 
                                              value = NULL, 
                                              min = min_dissolved, 
-                                             max = max_dissovled,
+                                             max = max_dissolved,
                                              step = .01)
                          ),
                          column(2,
@@ -431,7 +433,7 @@ ui <- fluidPage(
                                              label = "", 
                                              value = NULL, 
                                              min = min_dissolved, 
-                                             max = max_dissovled,
+                                             max = max_dissolved,
                                              step = .01)
                          ),
                          column(2,
@@ -469,145 +471,152 @@ ui <- fluidPage(
                                              step = .01)
                          ),
                          column(2,
+                                htmlOutput("pot_div"),
+                                numericInput(inputId = "Potassium_mgl", 
+                                             label = "", 
+                                             value = NULL, 
+                                             step = .01)
+                         ),
+                         column(2,
                                 htmlOutput("mag_div"),
                                 numericInput(inputId = "Magnesium_mgl", 
                                              label = "", 
                                              value = NULL, 
                                              step = .01)
                          )
-                         ),
-                        hr(),
-                        fluidRow(
-                          column(2, selectInput(inputId = "Instream_Location", 
-                                             label = "Instream Location", 
-                                             # added empty string to options for streams in order to prevent errors 
-                                             # that could occur if users submit data without changing the stream name from the default stream,
-                                             # leading to data misattributed to the default stream
-                                             choices = c("", instream_locations)
-                                             ) 
-                        ),
-                        
-                        column(2, selectInput(inputId = "Collection_Type", 
-                                              label = "Collection Type", 
-                                              # added empty string to options for streams in order to prevent errors 
-                                              # that could occur if users submit data without changing the stream name from the default stream,
-                                              # leading to data misattributed to the default stream
-                                              choices = c("", collect_types)
-                                              ) 
-                        ),
-                        column(2, selectInput(inputId = "Flow_Type", 
-                                              label = "Flow Type", 
-                                              # added empty string to options for streams in order to prevent errors 
-                                              # that could occur if users submit data without changing the stream name from the default stream,
-                                              # leading to data misattributed to the default stream
-                                              choices = c("", flow_types)
-                                              ) 
-                        ),
-                        column(2, selectInput(inputId = "Flow_Condition", 
-                                              label = "Stage Condition", 
-                                              # added empty string to options for streams in order to prevent errors 
-                                              # that could occur if users submit data without changing the stream name from the default stream,
-                                              # leading to data misattributed to the default stream
-                                              choices = c("", flow_conditions)
-                                              ) 
-                        )
-                        ),
-                        hr(),
-                        fluidRow(
-                          column(2, selectInput(inputId = "Substrate", 
-                                                label = "Substrate", 
-                                                # added empty string to options for streams in order to prevent errors 
-                                                # that could occur if users submit data without changing the stream name from the default stream,
-                                                # leading to data misattributed to the default stream
-                                                choices = c("", substrates), 
-                                                multiple = TRUE) 
-                          ),
-                          column(2,
-                                 numericInput(inputId = "Channel_Width_m",
-                                              label = "Channel Width (m)",
-                                              value = NULL,
-                                              min = 0,
-                                              max = 10000 # 
-                                 )
-                          ),
-                          column(4,
-                                 textInput(inputId = "Water_Odor",
-                                   label = "Water Odor",
-                                   value = "",
-                                   # entry window takes up the entire width of its container / the browser window 
-                                   # to allow for long lists of data collectors to be visible
-                                   width = "50%" 
-                                 )
-                          ),
-                          column(4,
-                                 textInput(
-                                   inputId = "Water_Color",
-                                   label = "Water Color",
-                                   value = "",
-                                   # entry window takes up the entire width of its container / the browser window 
-                                   # to allow for long lists of data collectors to be visible
-                                   width = "100%" 
-                                 )
-                          )
-                          ),
-                          hr(),
-                          fluidRow(
-                            column(3, selectInput(inputId = "Weather_Conditions", 
-                                                  label = "Weather", 
-                                                  # added empty string to options for streams in order to prevent errors 
-                                                  # that could occur if users submit data without changing the stream name from the default stream,
-                                                  # leading to data misattributed to the default stream
-                                                  choices = c("", weather_conditions), 
-                                                  multiple = TRUE)
-                            ),
-                          
-                              column(4, selectInput(inputId = "RiverRight_Buffer", 
-                                                    label = "River Right Riparian Buffer Conition", 
-                                                    # added empty string to options for streams in order to prevent errors 
-                                                    # that could occur if users submit data without changing the stream name from the default stream,
-                                                    # leading to data misattributed to the default stream
-                                                    choices = c("",buffer_conditions)
-                                                    ) 
-                              ),
-  
-                                column(4, selectInput(inputId = "RiverLeft_Buffer", 
-                                                      label = "River Left Riparian Buffer Conition", 
-                                                      # added empty string to options for streams in order to prevent errors 
-                                                      # that could occur if users submit data without changing the stream name from the default stream,
-                                                      # leading to data misattributed to the default stream
-                                                      choices = c("",buffer_conditions)
-                                                      ) 
-                                )
-                            ),
+                       ),
                        hr(),
                        fluidRow(
-                                column(3,
-                                       numericInput(inputId = "USGS_Gage_cfs",
-                                                    label = "USGS Gage Discharge (cfs)",
-                                                    value = NULL)
-                                
-                              ),
-                              column(3,
-                                     numericInput(inputId = "USGS_Gage_ID",
-                                                  label = "USGS Gage ID",
-                                                  value = NULL)
-                              )
-                              ),
-                              
-                              hr(),
-                              fluidRow(
-                                column(8,
-                                       textInput(
-                                         inputId = "Water_Quality_Notes",
-                                         label = "Water Quality Notes",
-                                         value = "",
-                                         # entry window takes up the entire width of its container / the browser window 
-                                         # to allow for long lists of data collectors to be visible
-                                         width = "100%" 
-                                       )
+                         column(2, selectInput(inputId = "Instream_Location", 
+                                               label = "Instream Location", 
+                                               # added empty string to options for streams in order to prevent errors 
+                                               # that could occur if users submit data without changing the stream name from the default stream,
+                                               # leading to data misattributed to the default stream
+                                               choices = c("", instream_locations)
+                         ) 
+                         ),
+                         
+                         column(2, selectInput(inputId = "Collection_Type", 
+                                               label = "Collection Type", 
+                                               # added empty string to options for streams in order to prevent errors 
+                                               # that could occur if users submit data without changing the stream name from the default stream,
+                                               # leading to data misattributed to the default stream
+                                               choices = c("", collect_types)
+                         ) 
+                         ),
+                         column(2, selectInput(inputId = "Flow_Type", 
+                                               label = "Flow Type", 
+                                               # added empty string to options for streams in order to prevent errors 
+                                               # that could occur if users submit data without changing the stream name from the default stream,
+                                               # leading to data misattributed to the default stream
+                                               choices = c("", flow_types)
+                         ) 
+                         ),
+                         column(2, selectInput(inputId = "Flow_Condition", 
+                                               label = "Stage Condition", 
+                                               # added empty string to options for streams in order to prevent errors 
+                                               # that could occur if users submit data without changing the stream name from the default stream,
+                                               # leading to data misattributed to the default stream
+                                               choices = c("", flow_conditions)
+                         ) 
+                         )
+                       ),
+                       hr(),
+                       fluidRow(
+                         column(2, selectInput(inputId = "Substrate", 
+                                               label = "Substrate", 
+                                               # added empty string to options for streams in order to prevent errors 
+                                               # that could occur if users submit data without changing the stream name from the default stream,
+                                               # leading to data misattributed to the default stream
+                                               choices = c("", substrates), 
+                                               multiple = TRUE) 
+                         ),
+                         column(2,
+                                numericInput(inputId = "Channel_Width_m",
+                                             label = "Channel Width (m)",
+                                             value = NULL,
+                                             min = 0,
+                                             max = 10000 # 
                                 )
+                         ),
+                         column(4,
+                                textInput(inputId = "Water_Odor",
+                                          label = "Water Odor",
+                                          value = "",
+                                          # entry window takes up the entire width of its container / the browser window 
+                                          # to allow for long lists of data collectors to be visible
+                                          width = "50%" 
+                                )
+                         ),
+                         column(4,
+                                textInput(
+                                  inputId = "Water_Color",
+                                  label = "Water Color",
+                                  value = "",
+                                  # entry window takes up the entire width of its container / the browser window 
+                                  # to allow for long lists of data collectors to be visible
+                                  width = "100%" 
+                                )
+                         )
+                       ),
+                       hr(),
+                       fluidRow(
+                         column(3, selectInput(inputId = "Weather_Conditions", 
+                                               label = "Weather", 
+                                               # added empty string to options for streams in order to prevent errors 
+                                               # that could occur if users submit data without changing the stream name from the default stream,
+                                               # leading to data misattributed to the default stream
+                                               choices = c("", weather_conditions), 
+                                               multiple = TRUE)
+                         ),
+                         
+                         column(4, selectInput(inputId = "RiverRight_Buffer", 
+                                               label = "River Right Riparian Buffer Conition", 
+                                               # added empty string to options for streams in order to prevent errors 
+                                               # that could occur if users submit data without changing the stream name from the default stream,
+                                               # leading to data misattributed to the default stream
+                                               choices = c("",buffer_conditions)
+                         ) 
+                         ),
+                         
+                         column(4, selectInput(inputId = "RiverLeft_Buffer", 
+                                               label = "River Left Riparian Buffer Conition", 
+                                               # added empty string to options for streams in order to prevent errors 
+                                               # that could occur if users submit data without changing the stream name from the default stream,
+                                               # leading to data misattributed to the default stream
+                                               choices = c("",buffer_conditions)
+                         ) 
+                         )
+                       ),
+                       hr(),
+                       fluidRow(
+                         column(3,
+                                numericInput(inputId = "USGS_Gage_cfs",
+                                             label = "USGS Gage Discharge (cfs)",
+                                             value = NULL)
                                 
-                              ),
+                         ),
+                         column(3,
+                                numericInput(inputId = "USGS_Gage_ID",
+                                             label = "USGS Gage ID",
+                                             value = NULL)
+                         )
+                       ),
+                       
+                       hr(),
+                       fluidRow(
+                         column(8,
+                                textInput(
+                                  inputId = "Water_Quality_Notes",
+                                  label = "Water Quality Notes",
+                                  value = "",
+                                  # entry window takes up the entire width of its container / the browser window 
+                                  # to allow for long lists of data collectors to be visible
+                                  width = "100%" 
+                                )
+                         )
+                         
+                       ),
                        hr(),
                        fluidRow(
                          column(12,
@@ -704,7 +713,7 @@ server <- function(input, output, session) {
   })
   
   nitrate_style <- eventReactive(input$Dissolved_Nitrate_mgl, {
-    style_switch(input$Dissolved_Nitrate_mgl, min_dissolved, max_dissovled, default_style, error_style)
+    style_switch(input$Dissolved_Nitrate_mgl, min_dissolved, max_dissolved, default_style, error_style)
   })
   
   output$nitrate_div <- renderUI({
@@ -720,7 +729,7 @@ server <- function(input, output, session) {
   })
   
   ammonium_style <- eventReactive(input$Dissolved_Ammonium_mgl, {
-    style_switch(input$Dissolved_Ammonium_mgl, min_dissolved, max_dissovled, default_style, error_style)
+    style_switch(input$Dissolved_Ammonium_mgl, min_dissolved, max_dissolved, default_style, error_style)
   })
   
   output$ammonium_div <- renderUI({
@@ -728,7 +737,7 @@ server <- function(input, output, session) {
   })
   
   srp_style <- eventReactive(input$Dissolved_Phosphorus_mgl, {
-    style_switch(input$Dissolved_Phosphorus_mgl, min_dissolved, max_dissovled, default_style, error_style)
+    style_switch(input$Dissolved_Phosphorus_mgl, min_dissolved, max_dissolved, default_style, error_style)
   })
   
   output$srp_div <- renderUI({
@@ -767,6 +776,13 @@ server <- function(input, output, session) {
     HTML(paste0("<div style='font-weight:bolder;",sod_style(), "'>Sodium (mg/L)</div>"))
   })
   
+  pot_style <- eventReactive(input$Potassium_mgl, {
+    style_switch(input$Potassium_mgl,min_totals, max_totals, default_style, error_style)
+  })
+  
+  output$pot_div <- renderUI({
+    HTML(paste0("<div style='font-weight:bolder;",sod_style(), "'>Potassium (mg/L)</div>"))
+  })
   mag_style <- eventReactive(input$Magnesium_mgl, {
     style_switch(input$Magnesium_mgl,min_totals, max_totals, default_style, error_style)
   })
@@ -802,6 +818,7 @@ server <- function(input, output, session) {
                            input$Total_Phosphorus_mgl,
                            input$Calcium_mgl, 
                            input$Sodium_mgl, 
+                           input$Potassium_mgl,
                            input$Magnesium_mgl,
                            input$Analytical_Lab,
                            input$Instream_Location, 
@@ -863,6 +880,7 @@ server <- function(input, output, session) {
          input$Calcium_mgl, 
          input$Sodium_mgl, 
          input$Magnesium_mgl,
+         input$Potassium_mgl,
          input$Analytical_Lab,
          input$Instream_Location, 
          input$Collection_Type, 
