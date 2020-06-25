@@ -56,7 +56,7 @@ buffer_conditions<-c("cleared", "fringe", "canopy")
 #' @param Observers character string listing collectors of the data
 #' @param Temperature_c numeric temperature in degrees celcius
 #' @param ph integer pH
-#' @param Dissolved_oxygen_mgl numeric dissolved oxygen concentration in mg / L
+#' @param Dissolved_Oxygen_mgl numeric dissolved oxygen concentration in mg / L
 #' @param Specific_Conductivity_uscm numeric specific conductivity
 #' @param Turbidity_ntu numeric turbidity in NTU
 #' @param Dissolved_Nitrate_mgl numeric nitrate in mg/L
@@ -89,7 +89,7 @@ buffer_conditions<-c("cleared", "fringe", "canopy")
 #'
 #' @examples
 #' 
-update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
+update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, Dissolved_Oxygen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
                        Dissolved_Ammonium_mgl,Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgl, Calcium_mgl, Magnesium_mgl, Sodium_mgl,Potassium_mgl, Analytical_Lab, 
                        Instream_Location,Collection_Type, Channel_Width_m,Flow_Type, Substrate, Stage_Condition, Water_Odor,
                        Water_Color, Weather_Conditions, RiverRight_Buffer, RiverLeft_Buffer, Water_Quality_Notes, USGS_Gage_cfs,USGS_Gage_ID,db_path){
@@ -113,21 +113,21 @@ update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, 
   #  msg <- paste0(msg, "No weather selected.<br/>")
   #}
   #need to select collection type
-  if(is.na(Collection_Type)){
-    msg <- paste0(msg, "No collection type selected.<br/>")
-  }
+  #if(is.na(Collection_Type)){
+  #  msg <- paste0(msg, "No collection type selected.<br/>")
+  #}
   #need to select location of sample in channel
-  if(is.na(Instream_Location)){
-    msg <- paste0(msg, "No instream location selected.<br/>")
-  }
+  #if(is.na(Instream_Location)){
+  #  msg <- paste0(msg, "No instream location selected.<br/>")
+  #}
   #need to select flow type
-  if(is.na(Flow_Type)){
-    msg <- paste0(msg, "No flow type selected.<br/>")
-  }
+  #if(is.na(Flow_Type)){
+   # msg <- paste0(msg, "No flow type selected.<br/>")
+  #}
   #need to select stage condition during sample event
-  if(is.na(Stage_Condition)){
-    msg <- paste0(msg, "No stage condition selected.<br/>")
-  }
+ # if(is.na(Stage_Condition)){
+   # msg <- paste0(msg, "No stage condition selected.<br/>")
+  #}
   
   
   # if temperature measurement is missing, don't throw an error, 
@@ -146,9 +146,9 @@ update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, 
     msg <- paste0(msg, "Entered pH value outside reasonable range (",min_ph,"-",max_ph,").<br/>")
   }
   
-  if(is.na(Dissolved_Oxyen_mgl)){
+  if(is.na(Dissolved_Oxygen_mgl)){
     
-  }else if(Dissolved_Oxyen_mgl > max_do | Dissolved_Oxyen_mgl < min_do){
+  }else if(Dissolved_Oxygen_mgl > max_do | Dissolved_Oxygen_mgl < min_do){
     msg <- paste0(msg, "Entered dissolved oxygen value outside reasonable range (",min_do,"-",max_do,").<br/>")
   }
   
@@ -199,10 +199,10 @@ update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, 
   if(nchar(msg) == 0){
     
     # set up SQL insert query structure specifying fields and values (see usage examples of sqlInterpolate function)
-    sql <- "INSERT INTO habitat (Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
-                       Dissolved_Ammonium_mgl,Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgl, Calcium_mgl, Magnesium_mgl, Sodium_mgl,Potassium_mgl, Analytical_Lab, 
+    sql <- "INSERT INTO habitat (Date, Sample_Time, Og_Site, Observers, Temperature_c, ph, Dissolved_Oxygen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
+                       Dissolved_Ammonium_mgl, Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgl, Calcium_mgl, Magnesium_mgl, Sodium_mgl, Potassium_mgl, Analytical_Lab, 
                        Instream_Location,Collection_Type, Channel_Width_m,Flow_Type, Substrate, Stage_Condition, Water_Odor,
-                       Water_Color, Weather_Conditions, RiverRight_Buffer, RiverLeft_Buffer, Water_Quality_Notes, USGS_Gage_cfs,USGS_Gage_ID) VALUES (?Date,?Sample_Time ?Og_Site, ?Observers, ?Temperature_c, ?ph, ?Dissolved_Oxyen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
+                       Water_Color, Weather_Conditions, RiverRight_Buffer, RiverLeft_Buffer, Water_Quality_Notes, USGS_Gage_cfs,USGS_Gage_ID) VALUES (?Date,?Sample_Time, ?Og_Site, ?Observers, ?Temperature_c, ?ph, ?Dissolved_Oxygen_mgl, ?Specific_Conductivity_uscm, ?Turbidity_ntu, ?Dissolved_Nitrate_mgl, 
                        ?Dissolved_Ammonium_mgl,?Dissolved_Phosphorus_mgl, ?Total_Nitrogen_mgl, ?Total_Phosphorus_mgl, ?Calcium_mgl, ?Magnesium_mgl, ?Sodium_mgl,?Potassium_mgl, ?Analytical_Lab, 
                        ?Instream_Location,?Collection_Type, ?Channel_Width_m,?Flow_Type, ?Substrate, ?Stage_Condition, ?Water_Odor,
                        ?Water_Color, ?Weather_Conditions, ?RiverRight_Buffer, ?RiverLeft_Buffer, ?Water_Quality_Notes, ?USGS_Gage_cfs,?USGS_Gage_ID);"
@@ -218,33 +218,33 @@ update_hab <- function(Date, Sample_Time,Og_Site, Observers, Temperature_c, ph, 
                             Observers = Observers,
                             Temperature_c = Temperature_c, 
                             ph = ph, 
-                            Dissolved_Oxyen_mgl = Dissolved_Oxyen_mgl,
+                            Dissolved_Oxygen_mgl = Dissolved_Oxygen_mgl,
                             Specific_Conductivity_uscm = Specific_Conductivity_uscm,
                             Turbidity_ntu = Turbidity_ntu,
-                            Dissolved_Nitrate_mgl=Dissolved_Nitrate_mgl,
-                            Dissolved_Ammonium_mgl=Dissolved_Ammonium_mgl,
-                            Dissolved_Phosphorus_mgl=Dissolved_Phosphorus_mgl,
-                            Total_Nitrogen_mgl=Total_Nitrogen_mgl,
-                            Total_Phosphorus_mgl=Total_Phosphorus_mgl,
-                            Calcium_mgl=Calcium_mgl, 
-                            Sodium_mgl=Sodium_mgl, 
-                            Magnesium_mgl=Magnesium_mgl,
-                            Potassium_mgl=Potassium_mgl,
-                            Analytical_Lab=Analytical_Lab,
-                            Instream_Location=Instream_Location, 
-                            Collection_Type=Collection_Type, 
-                            Channel_Width_m=Channel_Width_m, 
-                            Flow_Type=Flow_Type, 
-                            Stage_Condition=Stage_Condition, 
-                            Substrate=Substrate, 
-                            Water_Odor=Water_Odor, 
-                            Water_Color=Water_Color, 
-                            Weather_Conditions=Weather_Conditions, 
-                            RiverRight_Buffer=RiverRight_Buffer,
-                            RiverLeft_Buffer=RiverLeft_Buffer,
-                            Water_Quality_Notes=Water_Quality_Notes, 
-                            USGS_Gage_cfs=USGS_Gage_cfs, 
-                            USGS_Gage_ID=USGS_Gage_ID)
+                            Dissolved_Nitrate_mgl = Dissolved_Nitrate_mgl,
+                            Dissolved_Ammonium_mgl = Dissolved_Ammonium_mgl,
+                            Dissolved_Phosphorus_mgl = Dissolved_Phosphorus_mgl,
+                            Total_Nitrogen_mgl = Total_Nitrogen_mgl,
+                            Total_Phosphorus_mgl = Total_Phosphorus_mgl,
+                            Calcium_mgl = Calcium_mgl, 
+                            Sodium_mgl = Sodium_mgl, 
+                            Magnesium_mgl = Magnesium_mgl,
+                            Potassium_mgl = Potassium_mgl,
+                            Analytical_Lab = Analytical_Lab,
+                            Instream_Location = Instream_Location, 
+                            Collection_Type = Collection_Type, 
+                            Channel_Width_m = Channel_Width_m, 
+                            Flow_Type = Flow_Type, 
+                            Stage_Condition = Stage_Condition, 
+                            Substrate = Substrate, 
+                            Water_Odor = Water_Odor, 
+                            Water_Color = Water_Color, 
+                            Weather_Conditions = Weather_Conditions, 
+                            RiverRight_Buffer = RiverRight_Buffer,
+                            RiverLeft_Buffer = RiverLeft_Buffer,
+                            Water_Quality_Notes = Water_Quality_Notes, 
+                            USGS_Gage_cfs = USGS_Gage_cfs, 
+                            USGS_Gage_ID = USGS_Gage_ID)
     
     # finally execute query to add record to database
     dbExecute(con, query)
@@ -709,7 +709,7 @@ server <- function(input, output, session) {
   
   # format label for row of water quality values
   output$water_quality <- renderUI({
-    HTML("<div style='font-weight:bolder;padding-top:20px;text-align: right;'>Water Quality: </div>")
+    HTML("<div style='font-weight:bolder;padding-top:25px;text-align: right;'>Water Quality: </div>")
   })
   
   nitrate_style <- eventReactive(input$Dissolved_Nitrate_mgl, {
@@ -835,9 +835,8 @@ server <- function(input, output, session) {
                            input$Water_Quality_Notes, 
                            input$USGS_Gage_cfs, 
                            input$USGS_Gage_ID,
-                           
                            db_path
-      )
+                           )
     }
     
     # if there are no error messages, show success message and hide error message
