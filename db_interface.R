@@ -24,16 +24,19 @@ GA_lat <- 32.646111
 GA_lon <- -83.431667
 
 # read in HUC8 shapes as SpatialPolygonsDataFrame from previously saved rds file
-huc8s <- readRDS("./data/huc8s.rds")
+huc8s <- readRDS("/Users/kylenconnelly/Documents/Kyle_(E)/UGA/Projects/RBC_Biodiv_Database/database/huc8s.rds")
 
 # directory path to .sqlite file database
-db_path <- "./data/Acanthonus.sqlite"
+db_path <- "/Users/kylenconnelly/Documents/Kyle_(E)/UGA/Projects/RBC_Biodiv_Database/database/Acanthonus.sqlite"
 
 # open connection to database
 con <- dbConnect(RSQLite::SQLite(), db_path)
 
 # get unique sampling dates from collections table
 ymd <- dbGetQuery(con, "SELECT DISTINCT year, month, day FROM collections;")
+
+# get unique sample target taxon from collections table
+tgt <- dbGetQuery(con, "SELECT DISTINCT Target_Taxon FROM collections;")[[1]]
 
 # get all unique species names from species table
 spp <- dbGetQuery(con, "SELECT Scientific_Name FROM species;")[[1]]
@@ -64,8 +67,8 @@ min_date <- as.POSIXlt(min(na.omit(date_ints)), origin = "1970-01-01")
 #' @return dataframe of records from occurrence database
 #'
 #' 
-get_query_data <- function(db_path, start_year, end_year, species){
-  
+get_query_data <- function(db_path, start_year, end_year, species, taxon){
+
   # if species are not specified in the user input
   if(length(species) < 1){
     
@@ -114,6 +117,16 @@ ui <- fluidPage(
                                             width = "100%",
                                             timeFormat = "%Y" # only show years, not months or days
                                             ) 
+                         )
+                       ),
+                       fluidRow(
+                         column(12,
+                                selectInput(inputId = "taxon", 
+                                                   label = "Target Taxon", 
+                                                   choices = tgt, 
+                                                   width = "100%",
+                                                   multiple = TRUE
+                                                   )
                          )
                        ),
                        fluidRow(
