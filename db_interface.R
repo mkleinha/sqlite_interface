@@ -1,4 +1,6 @@
 # author: Maxwell Kleinhans (maxwell.kleinhans@gmail.com)
+# branch editor: Kyle Connelly (kylenconnelly@gmail.com)
+# ui branch
 
 # read in libraries
 library(shiny)
@@ -36,10 +38,11 @@ con <- dbConnect(RSQLite::SQLite(), db_path)
 ymd <- dbGetQuery(con, "SELECT DISTINCT year, month, day FROM collections;")
 
 # get unique sample target taxon from collections table
-tgt <- dbGetQuery(con, "SELECT DISTINCT Target_Taxon FROM collections;")[[1]]
+tgt <- dbGetQuery(con, "SELECT Fish, Invertebrate, Plant, Reptile, Amphibian, year FROM collections
+                  WHERE year > 1700;")
 
 # get all unique species names from species table
-spp <- dbGetQuery(con, "SELECT Scientific_Name FROM species;")[[1]]
+spp <- dbGetQuery(con, "SELECT Scientific_Name FROM taxonomy_lookup;")[[1]]
 
 dbDisconnect(con) # disconnect from database
 
@@ -63,6 +66,7 @@ min_date <- as.POSIXlt(min(na.omit(date_ints)), origin = "1970-01-01")
 #' @param start_year four-digit integer - get records from this year and later
 #' @param end_year four-digit integer - get records from this year and earlier
 #' @param species string vector - get records for collections of these species
+#' @param taxon string vector - get records for collections of these taxa
 #'
 #' @return dataframe of records from occurrence database
 #'
@@ -84,6 +88,21 @@ get_query_data <- function(db_path, start_year, end_year, species, taxon){
                          WHERE Scientific_Name IN ('", paste(species, collapse = "','"), "') 
                          AND Year BETWEEN '", start_year, "' AND '", end_year, "';")
   }
+  
+  # if target taxon is not specified in the user input
+  #if(length(taxon) < 1){
+    
+    # construct SQL query as string to return records within specified year range
+   # get_record <- paste0("SELECT * FROM collections INNER JOIN subcollections 
+                         #ON subcollections.COLLECT_ID = collections.COLLECT_ID
+                         #WHERE Year BETWEEN '", start_year, "' AND '", end_year, "';")
+    # if target taxon are specified in user input
+ # }else{
+    # construct SQL query as string to return records of collections of species of target taxon selected within specified year range
+    #get_record <- paste0("SELECT Fish, Invertebrate, Plant, Reptile, Amphibian FROM collections  
+                        # WHERE Fish, Invertebrate, Plant, Reptile, Amphibian IN ('", paste(taxon, collapse = "','"), "') 
+                         # AND Year BETWEEN '", start_year, "' AND '", end_year, "';")
+ # }
   
   # create connection to database
   con <- dbConnect(RSQLite::SQLite(), db_path)
@@ -121,11 +140,11 @@ ui <- fluidPage(
                        ),
                        fluidRow(
                          column(12,
-                                selectInput(inputId = "taxon", 
+                                checkboxGroupInput(inputId = "taxon", 
                                                    label = "Target Taxon", 
                                                    choices = tgt, 
-                                                   width = "100%",
-                                                   multiple = TRUE
+                                                   inline = TRUE,
+                                                   width = "100%"
                                                    )
                          )
                        ),
@@ -353,7 +372,7 @@ server <- function(input, output, session) {
     year2 <- as.integer(format(input$year[2], "%Y"))
     
     # pass user inputs to query function
-    dtout <- get_query_data(db_path, year1, year2, input$species)
+    dtout <- get_query_data(db_path, year1, year2, input$species, input$taxon)
     
     dtout
   })
