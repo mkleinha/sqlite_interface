@@ -228,7 +228,7 @@ update_hab <- function(Date,Basin, Sample_Time, Og_Site, Observers, Temperature_
                     USGS_Gage_ID = ?USGS_Gage_ID,
                   WHERE Date = ?Date
                   AND Basin = ?Basin
-                  AND 0g_Site = ?Og_Site;"
+                  AND Og_Site = ?Og_Site;"
     
     
     # construct query using sqlInterpolate to prevent SQL injection attacks
@@ -463,9 +463,10 @@ ui <- fluidPage(
                                 numericInput(inputId = "Turbidity_ntu", 
                                              label = "", 
                                              value = NULL, 
-                                             min = min_turb, 
-                                             max = max_turb,
-                                             step = .01)
+                                             min = min_spc, 
+                                             max = max_spc,
+                                             step = .01, 
+                                             width="4cm")
                                 )
                          ),
                        
@@ -582,7 +583,7 @@ ui <- fluidPage(
                                                choices = c("", flow_types))
                                 ),
                          column(2, 
-                                selectInput(inputId = "Flow_Condition", 
+                                selectInput(inputId = "Stage_Condition", 
                                                label = "Stage Condition", 
                                                # added empty string to options for streams in order to prevent errors 
                                                # that could occur if users submit data without changing the stream name from the default stream,
@@ -862,6 +863,15 @@ server <- function(input, output, session) {
     HTML(paste0("<div style='font-weight:bolder;",mag_style(), "'>Magnesium (mg/L)</div>"))
   })
   
+  turb_style <- eventReactive(input$Turbidity_ntu, {
+    style_switch(input$Turbidity_ntu, min_turb, max_turb, default_style, error_style)
+  })
+  
+  output$turb_div <- renderUI({
+    HTML(paste0("<div style='font-weight:bolder;",turb_style(), "'>Turbidity (ntu)</div>"))
+  })
+  
+ 
   # store errors for printing to display
   err_out <- eventReactive(input$submit, {
     
@@ -1014,7 +1024,6 @@ server <- function(input, output, session) {
     updateNumericInput(session, "Calcium_mgl", value = "")
     updateNumericInput(session, "Potassium_mgl", value = "")
     updateNumericInput(session, "Magnesium_mgl", value = "")
-    updateNumericInput(session, "Sodium_mgl", value = "")
     updateTextInput(session, "Analytical_Lab", value = "")
     updateTextInput(session, "Collection_Type", value = "")
     updateTextInput(session, "Instream_Location", value = "")
@@ -1028,8 +1037,8 @@ server <- function(input, output, session) {
     updateTextInput(session, "RiverRight_Buffer", value = "")
     updateTextInput(session, "RiverLeft_Buffer", value = "")
     updateTextInput(session, "Water_Quality_Notes", value = "")
-    updateTextInput(session, "USGS_Gage_cfs", value = "")
-    updateTextInput(session, "USGS_Gage_ID", value = "")
+    updateNumericInput(session, "USGS_Gage_cfs", value = "")
+    updateNumericInput(session, "USGS_Gage_ID", value = "")
     
   })
   
@@ -1103,8 +1112,8 @@ server <- function(input, output, session) {
         updateTextInput(session, "RiverRight_Buffer", value = result$RiverRight_Buffer)
         updateTextInput(session, "RiverLeft_Buffer", value = result$RiverLeft_Buffer)
         updateTextInput(session, "Water_Quality_Notes", value = result$Water_Quality_Notes)
-        updateTextInput(session, "USGS_Gage_cfs", value = result$USGS_Gage_cfs)
-        updateTextInput(session, "USGS_Gage_ID", value = result$USGS_Gage_ID)
+        updateNumericInput(session, "USGS_Gage_cfs", value = result$USGS_Gage_cfs)
+        updateNumericInput(session, "USGS_Gage_ID", value = result$USGS_Gage_ID)
       }
     }
     queryerrs
