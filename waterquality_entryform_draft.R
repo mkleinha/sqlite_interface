@@ -99,11 +99,18 @@ update_hab <- function(Date,Basin, Sample_Time, Og_Site, Observers, Temperature_
   # replace one single quote in location descripton with two for SQL query formatting reasons
   #location <- gsub("'", "''", location)
   #Water_Quality_Notes <- gsub("'", "''", Water_Quality_Notes)
-  date <- gsub(" *UTC$", "", Date) # remove time from date
+  Date <- gsub(" *UTC$", "", Date) # remove time from date
   
   # empty string to which error messages will be pasted
   msg <- ""
-
+  if(length(Substrate)<1){
+    msg <- paste0(msg, "No substrate selected.")
+  }
+  
+  msg <- ""
+  if(length(Weather_Conditions)<1){
+    msg <- paste0(msg, "No Weather selected.")
+  }
   # if temperature measurement is missing, don't throw an error, 
   # but also skip bounds check to avoid 'missing value where TRUE/FALSE needed' error
   if(is.na(Temperature_c)){
@@ -372,12 +379,13 @@ ui <- fluidPage(
                                 ),
                          column(2,
                                 dateInput(
-                                  inputId = "Date",
+                                  inputId = "date",
                                   label = "Date",
                                   format = "yyyy-mm-dd",
                                   value = current_date,
                                   max = current_date,
-                                  min = first_date)
+                                  min = first_date
+                                  )
                                 ),
                          column(2,
                                 textInput(
@@ -883,7 +891,7 @@ server <- function(input, output, session) {
     }else{
       
       # attempt to add a record composed of the entered values and retrieve any error messages
-      result <- update_hab(input$Date,
+      result <- update_hab(input$date,
                            input$Basin,
                            input$Sample_Time,
                            input$Og_Site,
@@ -944,7 +952,7 @@ server <- function(input, output, session) {
   
   # combine all inputs to monitor for changes
   check_all_inputs <- reactive({
-    list(input$Date,
+    list(input$date,
          input$Basin,
          input$Sample_Time,
          input$Og_Site,
@@ -1006,8 +1014,8 @@ server <- function(input, output, session) {
   })
   observeEvent(input$clear, {
     updateTextInput(session, "Basin", value = "")
-    updateDateInput(session, "Date", value = current_date)
-    udateTextInput(session, "Sample_Time", value = "")
+    updateDateInput(session, "date", value = current_date)
+    updateTextInput(session, "Sample_Time", value = "")
     updateNumericInput(session, "Og_Site", value = "")
     updateTextInput(session, "Observers", value = "")
     updateNumericInput(session, "Temperature_c", value = "")
@@ -1050,7 +1058,7 @@ server <- function(input, output, session) {
   query_out <- eventReactive(input$query, {
     queryerrs <- ""  
     
-    if(is.na(input$Date)){
+    if(is.na(input$date)){
       queryerrs <- paste0(queryerrs, "Please specify a date before attempting to query records.<br/>")
     }
     
@@ -1064,7 +1072,7 @@ server <- function(input, output, session) {
     
     if(nchar(queryerrs) == 0){
       # construct SQL SELECT query
-      get_records <- paste0("SELECT * FROM habitat WHERE Date = '",input$Date,"' AND Basin = '",input$Basin,"' AND Og_Site = ",input$Og_Site)
+      get_records <- paste0("SELECT * FROM habitat WHERE Date = '",input$date,"' AND Basin = '",input$Basin,"' AND Og_Site = ",input$Og_Site)
       
       # connect to database
       con <- dbConnect(RSQLite::SQLite(), db_path)
@@ -1076,14 +1084,14 @@ server <- function(input, output, session) {
       dbDisconnect(con)
       
       if(nrow(result) < 1){
-        queryerrs <- paste0(queryerrs, paste0("No records found matching Date: ", input$Date, ", Basin: ", input$Basin, ", and Og_Site: ", input$Og_Site,".<br/>"))
+        queryerrs <- paste0(queryerrs, paste0("No records found matching Date: ", input$date, ", Basin: ", input$Basin, ", and Og_Site: ", input$Og_Site,".<br/>"))
         
       }else if(nrow(result) > 1){
-        queryerrs <- paste0(queryerrs, paste0("Multiple records found matching Date: ", input$Date, ", Basin: ", input$Basin, ", and Og_Site: ", input$Og_Site,".<br/>"))
+        queryerrs <- paste0(queryerrs, paste0("Multiple records found matching Date: ", input$date, ", Basin: ", input$Basin, ", and Og_Site: ", input$Og_Site,".<br/>"))
         
       }else{
         
-        udateTextInput(session, "Sample_Time", value = result$Sample_Time)
+        updateTextInput(session, "Sample_Time", value = result$Sample_Time)
         updateTextInput(session, "Observers", value = result$Observers)
         updateNumericInput(session, "Temperature_c", value = result$Temperature_c)
         updateNumericInput(session, "ph", value = result$ph)     
