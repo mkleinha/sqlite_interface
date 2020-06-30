@@ -396,10 +396,10 @@ ui <- fluidPage(
                                   min = first_date
                                   )
                                 ),
-                         column(2,
+                         column(3,
                                 textInput(
                                   inputId = "Sample_Time",
-                                  label = "Sample Time (hh:mm, 24hr",
+                                  label = "Sample Time (hh:mm, 24hr)",
                                   value = ""
                                   # entry window takes up the entire width of its container / the browser window 
                                   # to allow for long lists of data collectors to be visible
@@ -413,7 +413,7 @@ ui <- fluidPage(
                                              max = 1000000000 # this seems like a lot of sites, but who knows how people number their sites
                                 )
                                 ),
-                         column(5,
+                         column(4,
                                 textInput(
                                   inputId = "Observers",
                                   label = "Observer(s)",
