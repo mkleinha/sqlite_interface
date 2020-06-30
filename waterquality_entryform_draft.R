@@ -399,7 +399,7 @@ ui <- fluidPage(
                          column(2,
                                 textInput(
                                   inputId = "Sample_Time",
-                                  label = "Sample Time",
+                                  label = "Sample Time (hh:mm, 24hr",
                                   value = ""
                                   # entry window takes up the entire width of its container / the browser window 
                                   # to allow for long lists of data collectors to be visible
@@ -463,7 +463,7 @@ ui <- fluidPage(
                                              value = NULL, 
                                              min = min_do, 
                                              max = max_do,
-                                             step = .01)
+                                             step = .1)
                                 ),
                          column(3,
                                 htmlOutput("spc_div"),
@@ -472,18 +472,18 @@ ui <- fluidPage(
                                              value = NULL, 
                                              min = min_spc, 
                                              max = max_spc,
-                                             step = .01, 
-                                             width="4cm")
+                                             step = .01 
+                                             )
                                 ),
                          column(2,
                                 htmlOutput("turb_div"),
                                 numericInput(inputId = "Turbidity_ntu", 
                                              label = "", 
                                              value = NULL, 
-                                             min = min_spc, 
-                                             max = max_spc,
-                                             step = .01, 
-                                             width="4cm")
+                                             min = min_turb, 
+                                             max = max_turb,
+                                             step = .1 
+                                             )
                                 )
                          ),
                        
@@ -624,28 +624,28 @@ ui <- fluidPage(
                                 ),
                          column(2,
                                 numericInput(inputId = "Channel_Width_m",
-                                             label = "Channel Width (m)",
+                                             label = "Wetted Channel Width (m)",
                                              value = NULL,
                                              min = 0,
                                              max = 10000 #
                                              )
                                 ),
-                         column(4,
+                         column(3,
                                 textInput(inputId = "Water_Odor",
                                           label = "Water Odor",
-                                          value = "",
+                                          value = ""
                                           # entry window takes up the entire width of its container / the browser window 
                                           # to allow for long lists of data collectors to be visible
-                                          width = "50%"
+                                          
                                           )
                                 ),
-                         column(4,
+                         column(3,
                                 textInput(inputId = "Water_Color",
                                   label = "Water Color",
-                                  value = "",
+                                  value = ""
                                   # entry window takes up the entire width of its container / the browser window 
                                   # to allow for long lists of data collectors to be visible
-                                  width = "100%")
+                                  )
                                 )
                          ),
                        hr(),
@@ -712,10 +712,10 @@ ui <- fluidPage(
                          column(12,
                                 actionButton(inputId = "submit", label = "Submit")
                          ),
-                         column(4,
+                         column(1,
                                 actionButton(inputId = "query", label = "Query")
                          ),
-                         column(4,
+                         column(2,
                                 actionButton(inputId = "clear", label = "Clear")
                          )
                        ),
