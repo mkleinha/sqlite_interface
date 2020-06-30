@@ -38,7 +38,7 @@ max_totals<-40
 min_totals<-0
 
 
-# lists for input options
+# lists for input options for parameters with defined but multiple options. 
 basins <- c("Holly", "Etowah", "Conasauga")
 substrates<-c("not determined", "bedrock", "boulder", "cobble", "gravel", "sand", "silt", "mud", "concrete", "wood", "leaves")
 labs<-c("CAIS-UGA", "Analytical Chemistry Lab, Ecology, UGA", "Dalton Utilities","Laboratory for Environmental Analysis, Hassan Lab, UGA", "NA", "Other" )
@@ -48,7 +48,11 @@ flow_types<-c("riffle", "run", "pool", "backwater", "other")
 flow_conditions<-c("not determined", "stable-low", "stable-high", "stable-normal", "rising", "falling", "peak")
 weather_conditions<-c("NA", "heavy rain", "hot", "cold", "sunny", "cloudy", "partly cloudy", "light rain", "snow")
 buffer_conditions<-c("cleared", "fringe", "canopy")
-#usgs_gages<c()
+
+#usgs_gages<c()#may eventually add USGS gage ID choices that has built in code to fetch discharge on the date entered. 
+
+
+#' The parameters to be included in the form. 
 #' update_hab
 #'
 #' @param Date character string date in the form yyyy-mm-dd
@@ -91,6 +95,8 @@ buffer_conditions<-c("cleared", "fringe", "canopy")
 #'
 #' @examples
 #' 
+
+#create a function that will update the habitat table. 
 update_hab <- function(Date,Basin, Sample_Time, Og_Site, Observers, Temperature_c, ph, Dissolved_Oxygen_mgl, Specific_Conductivity_uscm, Turbidity_ntu, Dissolved_Nitrate_mgl, 
                        Dissolved_Ammonium_mgl, Dissolved_Phosphorus_mgl, Total_Nitrogen_mgl, Total_Phosphorus_mgl, Sodium_mgl,Calcium_mgl, Potassium_mgl, Magnesium_mgl, Analytical_Lab, 
                        Collection_Type, Instream_Location, Flow_Type, Channel_Width_m,  Substrate, Stage_Condition, Water_Odor,
@@ -102,6 +108,8 @@ update_hab <- function(Date,Basin, Sample_Time, Og_Site, Observers, Temperature_
   Date <- gsub(" *UTC$", "", Date) # remove time from date
   
   # empty string to which error messages will be pasted
+  #parameters where Multiple=TRUE in the UI need to if the length bit or the submit form 
+  #will throw an error expecting lenght 1 but returning 0. 
   msg <- ""
   if(length(Substrate)<1){
     msg <- paste0(msg, "No substrate selected.")
@@ -111,6 +119,7 @@ update_hab <- function(Date,Basin, Sample_Time, Og_Site, Observers, Temperature_
   if(length(Weather_Conditions)<1){
     msg <- paste0(msg, "No Weather selected.")
   }
+  #Set QAQC rules for data entry
   # if temperature measurement is missing, don't throw an error, 
   # but also skip bounds check to avoid 'missing value where TRUE/FALSE needed' error
   if(is.na(Temperature_c)){
@@ -367,7 +376,7 @@ ui <- fluidPage(
               
               # page 51 of "PN, Mon Guidelines & Perf Stds_11.8.18.pdf"
               tabPanel("Field Data Sheet Entry", id = "single", 
-                       # first row, location, date, site
+                       # first row, Basin, date, site, observers
                        fluidRow(
                          column(2,
                                 selectInput(inputId = "Basin", 
@@ -415,7 +424,7 @@ ui <- fluidPage(
                                 )
                          ),
                        hr(),
-                       # second row, water quality
+                       # second row, begin water quality
                        fluidRow(
                          column(2,
                                 htmlOutput("water_quality")
@@ -478,7 +487,7 @@ ui <- fluidPage(
                                 )
                          ),
                        
-                       # third row, water quality
+                       # third row, nutrients
                        fluidRow(
                          column(2,
                                 selectInput(inputId = "Analytical_Lab", 
@@ -534,6 +543,7 @@ ui <- fluidPage(
                                              step = .01)
                                 )
                          ),
+                       #ions
                        fluidRow(
                          column(2,
                                 htmlOutput("calc_div"),
@@ -565,6 +575,7 @@ ui <- fluidPage(
                                 )
                          ),
                        hr(),
+                       #4th row. Sample information
                        fluidRow(
                          column(2, 
                                 selectInput(inputId = "Instream_Location", 
@@ -599,6 +610,7 @@ ui <- fluidPage(
                                                choices = c("", flow_conditions))
                                 )
                        ),
+                      #5th row
                        hr(),
                        fluidRow(
                          column(2, 
@@ -637,6 +649,7 @@ ui <- fluidPage(
                                 )
                          ),
                        hr(),
+                      #6th Row
                        fluidRow(
                          column(3, 
                                 selectInput(inputId = "Weather_Conditions", 
@@ -667,6 +680,7 @@ ui <- fluidPage(
                                 )
                          ),
                        hr(),
+                      #7th row
                        fluidRow(
                          column(3,
                                 numericInput(inputId = "USGS_Gage_cfs",
@@ -680,6 +694,7 @@ ui <- fluidPage(
                                 )
                          ),
                        hr(),
+                      #8th row. notes
                        fluidRow(
                          column(8,
                                 textInput(
@@ -692,6 +707,7 @@ ui <- fluidPage(
                                 )
                          ),
                        hr(),
+                      #9th row Buttons
                        fluidRow(
                          column(12,
                                 actionButton(inputId = "submit", label = "Submit")
@@ -753,7 +769,7 @@ server <- function(input, output, session) {
   # convert current time to number of seconds since January 1, 1970
   current_unix_time <- as.double(current_time)
   
-  # CSS of the temperature entry field reacts to value entered
+  # CSS of the temperature entry field reacts to value entered (changes color if value out of range)
   temp_style <- eventReactive(input$Temperature_c, {
     style_switch(input$Temperature_c, min_temp, max_temp, default_style, error_style)
   })
