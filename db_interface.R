@@ -2,9 +2,13 @@
 
 # read in libraries
 library(shiny)
+library(shinyjs) # more dynamic user interface options
+library(xlsx) # read in excel files
 library(leaflet) # for mapping
 library(RSQLite) # SQLite support
 library(DBI) # database functions
+
+source("./interface_functions.R")
 
 # change default to read strings in from tables as characters instead of factors
 options(stringsAsFactors = FALSE)
