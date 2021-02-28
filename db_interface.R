@@ -42,11 +42,6 @@ ymd <- dbGetQuery(con, "SELECT DISTINCT year, month, day FROM collections;")
 # get all unique species names from species table
 spp <- dbGetQuery(con, "SELECT Scientific_Name FROM taxonomy_lookup;")[[1]]
 
-# get lists of column header names for subcollection tables
-hab_cols <- dbListFields(con, "subcollections_habitat")
-set_cols <- dbListFields(con, "subcollections_organisms")
-sub_cols <- dbListFields(con, "subcollections")
-
 # get unique sites and coordinates already in the database
 site_lookup <- dbGetQuery(con, "SELECT DISTINCT SITE_ID, Og_site, Og_Lat, Og_Lon FROM collections")
 
