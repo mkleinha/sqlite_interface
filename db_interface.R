@@ -870,6 +870,7 @@ server <- function(input, output, session) {
     if(is.null(subcollection_out())){
       import_errs <- "Records already appear in database. No database import performed to avoid duplicate records."
       shinyjs::hide("kickset_working")
+      shinyjs::hide("kickset_imported")
     }else{
       
       con <- dbConnect(RSQLite::SQLite(), db_path)
